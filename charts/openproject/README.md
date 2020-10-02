@@ -1,4 +1,4 @@
-# OpenProject Helm Chart + Configuration Sidecar
+# OpenProject Helm Chart
 This is a simple OpenProject Helm Chart with a sidecar that can configure OpenProjects most important settings and auth sources.
 
 ## Usage

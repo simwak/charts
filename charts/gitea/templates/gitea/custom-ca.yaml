@@ -1,0 +1,9 @@
+{{- if .Values.gitea.customCA.enabled  }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gitea.fullname" . }}-custom-ca
+data:
+  ca.pem: |+2
+{{ .Values.gitea.customCA.ca | indent 4 }}
+{{- end }}
