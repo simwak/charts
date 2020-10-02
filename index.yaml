@@ -1,0 +1,18 @@
+apiVersion: v1
+entries:
+  openproject:
+  - apiVersion: v2
+    appVersion: 10.6.5
+    created: "2020-10-02T17:27:26.4689413+02:00"
+    dependencies:
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 9.1.1
+    description: A Helm chart for OpenProject
+    digest: 4921b45a4674004fedc10fa9324770bca52d1045ea061873898a5df83812d4df
+    name: openproject
+    type: application
+    urls:
+    - https://github.com/simwak/charts/releases/download/openproject-0.1.0/openproject-0.1.0.tgz
+    version: 0.1.0
+generated: "2020-10-02T17:27:26.0759103+02:00"
