@@ -1,6 +1,6 @@
 # Gitea Helm Chart
 
-> :warning: This is a fork of https://gitea.com/gitea/helm-chart. This releases includes custom CA capability, OAuth configureation, PostgreSQL fullnameOverride support and corrected default storage class. Do not use this chart if do not need these features or if they are already implemented in the official chart. This chart does not increase the patch level nor should it be a long time solution to use.
+> :warning: This is a fork of https://gitea.com/gitea/helm-chart. This releases includes custom CA capability, OAuth configuration, PostgreSQL fullnameOverride support and corrected default storage class. Do not use this chart if you do not need these features or if they are already implemented in the official chart. This chart does not increase the patch level nor should it be a long time solution to use.
 
 [Gitea](https://gitea.io/en-us/) is a community managed lightweight code hosting solution written in Go. It is published under the MIT license.
 
