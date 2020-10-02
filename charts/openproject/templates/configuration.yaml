@@ -1,0 +1,11 @@
+{{- if .Values.configuration.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configuration
+data:
+  settings: |
+{{ toYaml .Values.configuration.settings | indent 4 }}
+  auth_sources: |
+{{ toYaml .Values.configuration.auth_sources | indent 4 }}
+{{- end }}

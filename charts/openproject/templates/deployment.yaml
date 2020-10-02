@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configuration.yaml") . | sha256sum }}
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: openproject
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ .Release.Name }}-postgresql:5432/{{ .Values.postgresql.postgresqlDatabase }}"
+            - name: OPENPROJECT_ONBOARDING__ENABLED
+              value: "false"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 120
+            periodSeconds: 120
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            initialDelaySeconds: 120
+            periodSeconds: 120
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - mountPath: /var/openproject
+              name: openproject-data
+        {{- if .Values.configuration.enabled }}
+        - name: sidecar
+          image: simwak/openproject-sidecar:latest
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: OPENPROJECT_DEPLOYMENT
+              value: {{ .Release.Name }}
+            - name: OPENPROJECT_DEACTIVATE_ADMIN
+              value: "true"
+            - name: DATABASE_USER
+              value: "{{ .Values.postgresql.postgresqlUsername }}"
+            - name: DATABASE_PASSWORD
+              value: "{{ .Values.postgresql.postgresqlPassword }}"
+            - name: DATABASE_HOST
+              value: "{{ .Release.Name }}-postgresql"
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: DATABASE_DB
+              value: "{{ .Values.postgresql.postgresqlDatabase }}"
+          volumeMounts:
+            - mountPath: /var/openproject/config
+              name: openproject-config
+        {{- end }}
+      serviceAccountName: {{ .Release.Name }}-sidecar
+      volumes:
+        - name: openproject-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (.Release.Name) }}
+        {{- else }}
+          emptyDir: {}
+        {{ end }}
+        {{- if .Values.configuration.enabled }}
+        - name: openproject-config
+          configMap:
+            name: {{ .Release.Name }}-configuration
+        {{- end }}

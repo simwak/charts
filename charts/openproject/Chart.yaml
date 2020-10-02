@@ -1,0 +1,10 @@
+apiVersion: v2
+name: openproject
+description: A Helm chart for OpenProject
+type: application
+version: 0.1.0
+appVersion: 10.6.5
+dependencies:
+- name: postgresql
+  version: "9.1.1"
+  repository: "https://charts.bitnami.com/bitnami"

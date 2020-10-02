@@ -1,0 +1,58 @@
+# Default values
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: openproject/community
+  pullPolicy: IfNotPresent
+  tag: "10.6.5"
+
+persistence:
+  enabled: true
+  size: 8Gi
+
+postgresql:
+  persistence:
+    enabled: true
+    size: 4G
+  postgresqlDatabase: openproject
+  postgresqlUsername: openproject
+  postgresqlPassword: superSecretPassword
+
+# This is the configuration of a custom sidecar container.
+# It waits for a successfull start of OpenProject, then modifies
+# it's database and restarts OpenProject.
+# Hint: All attributes from the DB are possible in "settings"
+configuration:
+  enabled: false
+  settings:
+    host_name: openproject.example.com
+    protocol: https
+    self_registration: 0
+    lost_password: 0
+    smtp_openssl_verify_mode: none
+    smtp_enable_starttls_auto: 0
+    smtp_ssl: 0
+    smtp_address:
+    smtp_port: 587
+    smtp_domain: your.domain.com
+    smtp_authentication: plain
+    smtp_user_name:
+    smtp_password:
+  auth_sources:
+    example_ldap:
+      type: LdapAuthSource
+      name: OpenLDAP
+      host: openldap
+      port: 389 
+      account: cn=admin,dc=example
+      account_password: example
+      base_dn: ou=users,dc=example
+      attr_login: uid
+      attr_firstname: sn
+      attr_lastname: cn
+      attr_mail: mail
+      onthefly_register: true
+      attr_admin:
+      tls_mode: 0 
+      filter_string: 

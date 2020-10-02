@@ -1,0 +1,4 @@
+To access OpenProject create an ingress with your IngressController of choice our use port-forwarding.
+
+Service: {{ .Release.Name }}
+Port forwarding: kubectl port-forward svc/{{ .Release.Name }} 80
