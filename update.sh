@@ -29,5 +29,7 @@ read -p "Push? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][s
 
 git push
 
+
 # Checkout to main again
+git reset --hard
 git checkout main
