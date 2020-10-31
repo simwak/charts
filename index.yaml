@@ -1,24 +1,5 @@
 apiVersion: v1
 entries:
-  calavera:
-  - apiVersion: v2
-    created: "2020-10-31T14:30:49.9880994+01:00"
-    description: A fully featured web-based development environment
-    digest: 491c766fd77e7dcdb3890a60b3c5b85f5b74c195dc77dd26866809caca26e10d
-    home: https://github.com/simwak/charts/tree/main/charts/calavera
-    keywords:
-    - web-based
-    - development
-    - environment
-    maintainers:
-    - email: simon@simonwakenhut.me
-      name: Simon Wakenhut
-      url: simonwakenhut.me
-    name: calavera
-    type: application
-    urls:
-    - https://github.com/simwak/charts/releases/download/Calavera-0.1.0/Calavera-0.1.0.tgz
-    version: 0.1.0
   gitea:
   - apiVersion: v2
     appVersion: 1.12.3
