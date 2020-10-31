@@ -1,0 +1,18 @@
+{{- if .Values.gitea.enabled }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-gitea
+spec:
+  entryPoints:
+    - {{ .Values.gitea.entrypoints.https }}
+  routes:
+  - match: Host(`{{ .Values.gitea.domain }}`)
+    kind: Rule
+    services:
+    - name: {{ .Values.gitea.service }}
+      port: 3000
+      scheme: http
+  tls:
+    certResolver: {{ .Values.gitea.certResolver }}
+{{- end }}

@@ -1,0 +1,24 @@
+{{- if .Values.gitlab.enabled }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-gitlab
+spec:
+  entryPoints:
+    - {{ .Values.gitlab.entrypoints.https }}
+  routes:
+  - match: Host(`{{ .Values.gitlab.domain }}`)
+    kind: Rule
+    services:
+    - name: {{ .Values.gitlab.service }}
+      port: 8181
+      scheme: http
+  - match: Host(`{{ .Values.gitlab.domain }}`) && Path(`/admin/sidekiq`)
+    kind: Rule
+    services:
+    - name: {{ .Values.gitlab.service }}
+      port: 8080
+      scheme: http
+  tls:
+    certResolver: {{ .Values.gitlab.certResolver }}
+{{- end }}

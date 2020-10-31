@@ -1,0 +1,15 @@
+{{- if or .Values.openldap.schemaLdif .Values.openldap.defaultLdif }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-openldap-init
+data:
+{{- if .Values.openldap.schemaLdif  }}
+  schema.ldif: |
+{{ .Values.openldap.schemaLdif | indent 4 }}
+{{- end }}
+{{- if .Values.openldap.defaultLdif  }}
+  default.ldif: |
+{{ .Values.openldap.defaultLdif | indent 4 }}
+{{- end }}
+{{- end }}

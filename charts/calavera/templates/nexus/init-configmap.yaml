@@ -1,0 +1,152 @@
+{{- if .Values.nexus.enabled  }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-nexus-init
+data:
+  ldap-config.groovy: |+2
+    import org.sonatype.nexus.ldap.persist.LdapConfigurationManager
+    import org.sonatype.nexus.ldap.persist.entity.Connection
+    import org.sonatype.nexus.ldap.persist.entity.Mapping
+    import groovy.json.JsonSlurper
+
+    parsed_args = new JsonSlurper().parseText(args)
+
+    def ldapConfigMgr = container.lookup(LdapConfigurationManager.class.getName())
+
+    // Create a new configuration with the given name
+    def ldapConfig = ldapConfigMgr.newConfiguration()
+    ldapConfig.setName(parsed_args.name)
+
+    // Look for existing config to update and replace the blank one created earlier if found
+    boolean update = false;
+    ldapConfigMgr.listLdapServerConfigurations().each {
+      if (it.name == parsed_args.name) {
+        ldapConfig = it
+        update = true
+      }
+    }
+
+    // Connection
+    connection = new Connection()
+    connection.setHost(new Connection.Host(Connection.Protocol.valueOf(parsed_args.protocol), parsed_args.hostname, Integer.valueOf(parsed_args.port)))
+
+    connection.setAuthScheme("simple")
+    connection.setSystemUsername(parsed_args.username)
+    connection.setSystemPassword(parsed_args.password)
+
+    connection.setSearchBase(parsed_args.search_base)
+    connection.setConnectionTimeout(30)
+    connection.setConnectionRetryDelay(300)
+    connection.setMaxIncidentsCount(3)
+    connection.setUseTrustStore(Boolean.valueOf(parsed_args.use_trust_store))
+    ldapConfig.setConnection(connection)
+
+
+    // Mapping
+    mapping = new Mapping()
+    mapping.setUserBaseDn(parsed_args.user_base_dn)
+    mapping.setLdapFilter(parsed_args.user_ldap_filter)
+    mapping.setUserObjectClass(parsed_args.user_object_class)
+    mapping.setUserIdAttribute(parsed_args.user_id_attribute)
+    mapping.setUserRealNameAttribute(parsed_args.user_real_name_attribute)
+    mapping.setEmailAddressAttribute(parsed_args.user_email_attribute)
+
+    mapping.setLdapGroupsAsRoles(true)
+    mapping.setUserMemberOfAttribute(parsed_args.user_memberof_attribute)
+
+    mapping.setUserSubtree(Boolean.valueOf(parsed_args.user_subtree))
+    mapping.setGroupSubtree(Boolean.valueOf(parsed_args.group_subtree))
+
+    ldapConfig.setMapping(mapping)
+
+    if (update) {
+      ldapConfigMgr.updateLdapServerConfiguration(ldapConfig)
+    } else {
+      ldapConfigMgr.addLdapServerConfiguration(ldapConfig)
+    }
+
+    // Change default admin password
+    security.securitySystem.changePassword('admin', parsed_args.new_password)
+  nexus-init.py: |+2
+    import requests
+    import os
+    import json
+    import re
+    import time
+
+    print('Nexus init script ...', flush=True)
+
+    username = os.environ['USERNAME']
+    password = os.environ['PASSWORD']
+    host = os.environ['HOST']
+
+    ca = True
+
+    if 'CA' in os.environ:
+      ca = os.environ['CA']
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    script = open('ldap-config.groovy', 'r').read()
+
+    data = {
+      'name': 'ldapinit3',
+      'content': script,
+      'type': 'groovy'
+    }
+
+    ready = False
+    while not ready:
+      response = requests.get(host, verify=ca)
+      
+      if(response.status_code == 200):
+        ready = True
+        break
+
+      print('Waiting for Nexus OSS to be ready ...', flush=True)
+      time.sleep(15)
+
+    response = requests.delete(host + '/service/rest/v1/script/' + data['name'], auth=(username, password), verify=ca)
+
+    print(response)
+    print(response.content)
+
+    response = requests.post(host + '/service/rest/v1/script', json.dumps(data), auth=(username, password), headers=headers, verify=ca)
+
+    print(response)
+    print(response.content)
+
+    response = requests.get(host + '/service/rest/v1/script/' + data['name'], auth=(username, password), verify=ca)
+
+    print(response)
+    print(response.content)
+
+    params = {
+      'name': os.environ['LDAP_NAME'],
+      'protocol': os.environ['LDAP_PROTOCOL'],
+      'hostname': os.environ['LDAP_HOSTNAME'],
+      'port': os.environ['LDAP_PORT'],
+      'username': os.environ['LDAP_USERNAME'],
+      'password': os.environ['LDAP_PASSWORD'],
+      'search_base': os.environ['LDAP_SEARCH_BASE'],
+      'use_trust_store': os.environ['LDAP_USE_TRUST_STORE'],
+      'user_base_dn': os.environ['LDAP_USER_BASE_DN'],
+      'user_ldap_filter': os.environ['LDAP_USER_LDAP_FILTER'],
+      'user_object_class': os.environ['LDAP_USER_OBJECT_CLASS'],
+      'user_id_attribute': os.environ['LDAP_USER_ID_ATTRIBUTE'],
+      'user_real_name_attribute': os.environ['LDAP_USER_REAL_NAME_ATTRIBUTE'],
+      'user_email_attribute': os.environ['LDAP_USER_EMAIL_ATTRIBUTE'],
+      'user_memberof_attribute': os.environ['LDAP_USER_MEMBER_OF'],
+      'user_subtree': os.environ['LDAP_USER_SUBTREE'],
+      'group_subtree': os.environ['LDAP_GROUP_SUBTREE'],
+      'new_password': os.environ['NEW_PASSWORD']
+    }
+
+    response = requests.post(host + '/service/rest/v1/script/' + data['name'] + '/run', json.dumps(params), auth=(username, password), headers={ 'Content-Type': 'text/plain' }, verify=ca)
+
+    print(response)
+    print(response.content)
+{{- end }}

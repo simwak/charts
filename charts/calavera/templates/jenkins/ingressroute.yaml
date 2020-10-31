@@ -1,0 +1,18 @@
+{{- if .Values.jenkins.enabled  }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-jenkins
+spec:
+  entryPoints:
+    - {{ .Values.jenkins.entrypoints.https }}
+  routes:
+  - match: Host(`{{ .Values.jenkins.domain }}`)
+    kind: Rule
+    services:
+    - name: {{ .Values.jenkins.service }}
+      port: 8080
+      scheme: http
+  tls:
+    certResolver: {{ .Values.jenkins.certResolver }}
+{{- end }}

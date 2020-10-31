@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-keycloak
+spec:
+  entryPoints:
+    - {{ .Values.keycloak.entrypoints.https }}
+  routes:
+  - match: Host(`{{ .Values.keycloak.domain }}`)
+    kind: Rule
+    services:
+    - name: {{ .Values.keycloak.service }}
+      port: 80
+      scheme: http
+  tls:
+    certResolver: {{ .Values.keycloak.certResolver }}

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-api
+data:
+  config.json: |
+{{ .Values.api.config | toJson | indent 4 }}
+  configInternal.json: |
+{{ .Values.api.configInternal | toJson | indent 4 }}
+  configAuth.json: |
+{{ .Values.api.configAuth | toJson | indent 4 }}

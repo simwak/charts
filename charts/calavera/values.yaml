@@ -1,0 +1,221 @@
+customCA:
+  enabled: false
+  ca: 
+  # ca: |+2
+  #   -----BEGIN CERTIFICATE-----
+  #   MIIFATCCAumgAwIBAgIRAKc9ZKBASymy5TLOEp57N98wDQYJKoZIhvcNAQELBQAw
+  #   GjEYMBYGA1UEAwwPRmFrZSBMRSBSb290IFgxMB4XDTE2MDMyMzIyNTM0NloXDTM2
+  #   MDMyMzIyNTM0NlowGjEYMBYGA1UEAwwPRmFrZSBMRSBSb290IFgxMIICIjANBgkq
+  #   hkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA+pYHvQw5iU3v2b3iNuYNKYgsWD6KU7aJ
+  #   diddtZQxSWYzUI3U0I1UsRPTxnhTifs/M9NW4ZlV13ZfB7APwC8oqKOIiwo7IwlP
+  #   xg0VKgyz+kT8RJfYr66PPIYP0fpTeu42LpMJ+CKo9sbpgVNDZN2z/qiXrRNX/VtG
+  #   TkPV7a44fZ5bHHVruAxvDnylpQxJobtCBWlJSsbIRGFHMc2z88eUz9NmIOWUKGGj
+  #   EmP76x8OfRHpIpuxRSCjn0+i9+hR2siIOpcMOGd+40uVJxbRRP5ZXnUFa2fF5FWd
+  #   O0u0RPI8HON0ovhrwPJY+4eWKkQzyC611oLPYGQ4EbifRsTsCxUZqyUuStGyp8oa
+  #   aoSKfF6X0+KzGgwwnrjRTUpIl19A92KR0Noo6h622OX+4sZiO/JQdkuX5w/HupK0
+  #   A0M0WSMCvU6GOhjGotmh2VTEJwHHY4+TUk0iQYRtv1crONklyZoAQPD76hCrC8Cr
+  #   IbgsZLfTMC8TWUoMbyUDgvgYkHKMoPm0VGVVuwpRKJxv7+2wXO+pivrrUl2Q9fPe
+  #   Kk055nJLMV9yPUdig8othUKrRfSxli946AEV1eEOhxddfEwBE3Lt2xn0hhiIedbb
+  #   Ftf/5kEWFZkXyUmMJK8Ra76Kus2ABueUVEcZ48hrRr1Hf1N9n59VbTUaXgeiZA50
+  #   qXf2bymE6F8CAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMB
+  #   Af8wHQYDVR0OBBYEFMEmdKSKRKDm+iAo2FwjmkWIGHngMA0GCSqGSIb3DQEBCwUA
+  #   A4ICAQBCPw74M9X/Xx04K1VAES3ypgQYH5bf9FXVDrwhRFSVckria/7dMzoF5wln
+  #   uq9NGsjkkkDg17AohcQdr8alH4LvPdxpKr3BjpvEcmbqF8xH+MbbeUEnmbSfLI8H
+  #   sefuhXF9AF/9iYvpVNC8FmJ0OhiVv13VgMQw0CRKkbtjZBf8xaEhq/YqxWVsgOjm
+  #   dm5CAQ2X0aX7502x8wYRgMnZhA5goC1zVWBVAi8yhhmlhhoDUfg17cXkmaJC5pDd
+  #   oenZ9NVhW8eDb03MFCrWNvIh89DDeCGWuWfDltDq0n3owyL0IeSn7RfpSclpxVmV
+  #   /53jkYjwIgxIG7Gsv0LKMbsf6QdBcTjhvfZyMIpBRkTe3zuHd2feKzY9lEkbRvRQ
+  #   zbh4Ps5YBnG6CKJPTbe2hfi3nhnw/MyEmF3zb0hzvLWNrR9XW3ibb2oL3424XOwc
+  #   VjrTSCLzO9Rv6s5wi03qoWvKAQQAElqTYRHhynJ3w6wuvKYF5zcZF3MDnrVGLbh1
+  #   Q9ePRFBCiXOQ6wPLoUhrrbZ8LpFUFYDXHMtYM7P9sc9IAWoONXREJaO08zgFtMp4
+  #   8iyIYUyQAbsvx8oD2M8kRvrIRSrRJSl6L957b4AFiLIQ/GgV2curs0jje7Edx34c
+  #   idWw1VrejtwclobqNMVtG3EiPUIpJGpbMcJgbiLSmKkrvQtGng==
+  #   -----END CERTIFICATE-----
+
+smtp:
+  password: password
+
+api:
+  image:
+    repository: simwak/calavera-api
+    pullPolicy: Always
+    tag: latest
+  domain: api.example.com
+  certResolver: staging
+  entrypoints:
+    https: websecure
+    http: web
+  config:
+    domains:
+      base: example.com
+      api: api.example.com
+      dashboard: dashboard.example.com
+      gitlab: gitlab.example.com
+      gitea: gitea.example.com
+      jenkins: jenkins.example.com
+      mattermost: mattermost.example.com
+      nexus: nexus.example.com
+      openproject: openproject.example.com
+      keycloak: auth.example.com
+      editor: editor.example.com
+    namespace: calavera
+    userNamespace: calavera-user
+    displayName: Calavera
+    releaseName: calavera
+    entrypoint: websecure
+    certResolver: staging
+  configInternal:
+    ldapUrl: ldap://openldap:389
+    bindDn: cn=admin,dc=calavera
+    bindCredentials: openldap
+    usersDn: ou=users,dc=calavera
+    groupsDn: ou=groups,dc=calavera
+  configAuth:
+    url: https://auth.example.com/auth
+    realm: calavera
+    clientId: dashboard
+    onLoad: login-required
+    checkLoginIframe: false
+    flow: "implicit"
+
+dashboard:
+  image:
+    repository: simwak/calavera-dashboard
+    pullPolicy: Always
+    tag: latest
+  domain: dashboard.example.com
+  apiDomain: api.example.com
+  clientId: dashboard
+  secret: a-secret
+  redirectUri: https://dashboard.example.com
+  certResolver: staging
+  entrypoints:
+    https: websecure
+    http: web
+
+openldap:
+  host: openldap
+  adminUser: cn=admin,dc=example
+  configUser: cn=admin,cn=config
+  adminUserPassword: password
+  configUserPassword: password
+  schemaLdif: 
+  defaultLdif: 
+
+keycloak:
+  domain: auth.example.com
+  displayName: Calavera
+  service: keycloak-http
+  certResolver: staging
+  rsa:
+    certificate: 
+    privateKey: 
+  entrypoints:
+    https: websecure
+    http: web
+  smtp:
+    host: smptp.example.com
+    port: 465
+    auth: true
+    user: a-username
+    password: a-password
+    replyToDisplayName: Example
+    starttls: true
+    from: no-reply@example.ocom
+    fromDisplayName: Example
+    ssl: true
+  clients:
+    gitea:
+      oauth:
+        enabled: true
+        id: gitea
+        secret: a-secret
+    gitlab:
+      saml:
+        enabled: true
+        id: gitlab
+        secret: a-secret
+        host: gitlab.example.com
+        fingerprint: 
+  ldap:
+    bindDn: cn=admin,dc=example
+    bindCredential: admin
+    connectionUrl: ldap://openldap:389
+
+gitea:
+  enabled: true
+  domain: gitea.example.com
+  service: gitea-http
+  certResolver: staging
+  entrypoints:
+    https: websecure
+    http: web
+
+gitlab:
+  enabled: true
+  domain: gitlab.example.com
+  service: gitlab-webservice
+  certResolver: staging
+  entrypoints:
+    https: websecure
+    http: web
+  ldap:
+    bindCredential: admin
+
+openproject:
+  enabled: true
+  domain: openproject.example.com
+  service: openproject
+  certResolver: staging
+  entrypoints:
+    https: websecure
+    http: web
+
+jenkins:
+  enabled: true
+  domain: jenkins.example.com
+  service: jenkins
+  certResolver: staging
+  entrypoints:
+    https: websecure
+    http: web
+
+mattermost:
+  enabled: true
+  domain: mattermost.example.com
+  service: jenkins
+  certResolver: staging
+  entrypoints:
+    https: websecure
+    http: web
+
+nexus:
+  enabled: true
+  domain: nexus.example.com
+  service: nexus
+  certResolver: staging
+  entrypoints:
+    https: websecure
+    http: web
+  username: admin     # This values are hardcoded defaults, you cannot change them here
+  password: admin123   # This values are hardcoded defaults, you cannot change them here
+  new_password: admin123
+  ca: custom-ca.pem
+  ldap:
+    name: calavera-openldap
+    protocol: ldap
+    hostname: calavera-openldap
+    port: 389
+    username: cn=admin,dc=calavera
+    password: openldap
+    search_base: dc=calavera
+    use_trust_store: false
+    user_base_dn: ou=users
+    user_ldap_filter:
+    user_object_class: inetOrgPerson
+    user_id_attribute: mail
+    user_real_name_attribute: cn
+    user_email_attribute: mail
+    user_memberof_attribute: memberOf
+    user_subtree: true
+    group_subtree: true

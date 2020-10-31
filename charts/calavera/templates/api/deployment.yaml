@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-api
+  labels:
+    app: {{ .Release.Name }}-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-api
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-api
+    spec:
+      initContainers:
+        - name: wait-for-keycloak
+          image: byrnedo/alpine-curl
+          command: ["/bin/sh", "-c"]
+          args:
+            - until $(curl --output /dev/null --silent --head --insecure --fail https://{{ .Values.api.config.domains.keycloak }}/auth/); do
+                printf '.';
+                sleep 5;
+              done;
+        - name: wait-for-ldap
+          image: emeraldsquad/ldapsearch
+          command: ["/bin/sh", "-c"]
+          args:
+            - while [ -n "$(ldapsearch -H $LDAP_URL -D "$ADMIN_USER" -w "$ADMIN_PASSWORD" -b "$ADMIN_USER" 2>&1 > /dev/null)" ]; do
+                echo "Waiting for OpenLdap $OPENLDAP_HOST ...";
+                sleep 5;
+              done;
+          env:
+            - name: LDAP_URL
+              value: "{{ .Values.api.configInternal.ldapUrl }}"
+            - name: ADMIN_USER
+              value: "{{ .Values.api.configInternal.bindDn }}"
+            - name: ADMIN_PASSWORD
+              value: "{{ .Values.api.configInternal.bindCredentials }}"
+      containers:
+        - name: calavera-api
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          # command: [ "/bin/sh", "-c", "--" ]
+          # args: [ "while true; do sleep 30; done;" ]
+          env:
+            - name: API
+              value: "{{ .Values.api.domain }}"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          # livenessProbe:
+          #   initialDelaySeconds: 120
+          #   periodSeconds: 120
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   initialDelaySeconds: 120
+          #   periodSeconds: 120
+          #   httpGet:
+          #     path: /
+          #     port: http
+          volumeMounts:
+            - mountPath: /var/calavera/config
+              name: calavera-config
+      serviceAccountName: {{ .Release.Name }}-api
+      volumes:
+        - name: calavera-config
+          configMap:
+            name: {{ .Release.Name }}-api

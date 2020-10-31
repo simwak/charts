@@ -1,0 +1,84 @@
+{{- if .Values.nexus.enabled  }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-nexus-init
+spec:
+  template:
+    spec:
+      containers:
+      - name: nexus-init
+        image: python:stretch
+        command: ["/bin/sh", "-c"]
+        args:
+          - pip install requests;
+            cd /var/nexus/;
+            python nexus-init.py;
+        env:
+          - name: USERNAME
+            value: "{{ .Values.nexus.username }}"
+          - name: PASSWORD
+            value: "{{ .Values.nexus.password }}"
+          - name: NEW_PASSWORD
+            value: "{{ .Values.nexus.new_password }}"
+          - name: HOST
+            value: "https://{{ .Values.nexus.domain }}"
+          {{- if .Values.customCA.enabled  }}
+          - name: CA
+            value: "{{ .Values.nexus.ca }}"
+          {{- end }}
+          - name: LDAP_NAME
+            value: "{{ .Values.nexus.ldap.name }}"
+          - name: LDAP_PROTOCOL
+            value: "{{ .Values.nexus.ldap.protocol }}"
+          - name: LDAP_HOSTNAME
+            value: "{{ .Values.nexus.ldap.hostname }}"
+          - name: LDAP_PORT
+            value: "{{ .Values.nexus.ldap.port }}"
+          - name: LDAP_USERNAME
+            value: "{{ .Values.nexus.ldap.username }}"
+          - name: LDAP_PASSWORD
+            value: "{{ .Values.nexus.ldap.password }}"
+          - name: LDAP_SEARCH_BASE
+            value: "{{ .Values.nexus.ldap.search_base }}"
+          - name: LDAP_USE_TRUST_STORE
+            value: "{{ .Values.nexus.ldap.use_trust_store }}"
+          - name: LDAP_USER_BASE_DN
+            value: "{{ .Values.nexus.ldap.user_base_dn }}"
+          - name: LDAP_USER_LDAP_FILTER
+            value: "{{ .Values.nexus.ldap.user_ldap_filter }}"
+          - name: LDAP_USER_OBJECT_CLASS
+            value: "{{ .Values.nexus.ldap.user_object_class }}"
+          - name: LDAP_USER_ID_ATTRIBUTE
+            value: "{{ .Values.nexus.ldap.user_id_attribute }}"
+          - name: LDAP_USER_ID_ATTRIBUTE
+            value: "{{ .Values.nexus.ldap.user_id_attribute }}"
+          - name: LDAP_USER_REAL_NAME_ATTRIBUTE
+            value: "{{ .Values.nexus.ldap.user_real_name_attribute }}"
+          - name: LDAP_USER_EMAIL_ATTRIBUTE
+            value: "{{ .Values.nexus.ldap.user_email_attribute }}"
+          - name: LDAP_USER_MEMBER_OF
+            value: "{{ .Values.nexus.ldap.user_memberof_attribute }}"
+          - name: LDAP_USER_SUBTREE
+            value: "{{ .Values.nexus.ldap.user_subtree }}"
+          - name: LDAP_GROUP_SUBTREE
+            value: "{{ .Values.nexus.ldap.group_subtree }}"
+        volumeMounts:
+          - mountPath: /var/nexus
+            name: nexus
+          {{- if .Values.customCA.enabled  }}
+          - mountPath: /var/nexus-ca
+            name: nexus-ca
+          {{- end }}
+      restartPolicy: Never
+      volumes:
+        - name: nexus
+          configMap:
+            name: {{ .Release.Name }}-nexus-init
+        {{- if .Values.customCA.enabled  }}
+        - name: nexus-ca
+          secret:
+            secretName: {{ .Release.Name }}-custom-ca
+        {{- end }}
+  backoffLimit: 4
+{{- end }}

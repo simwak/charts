@@ -1,0 +1,18 @@
+{{- if .Values.mattermost.enabled  }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-mattermost
+spec:
+  entryPoints:
+    - {{ .Values.mattermost.entrypoints.https }}
+  routes:
+  - match: Host(`{{ .Values.mattermost.domain }}`)
+    kind: Rule
+    services:
+    - name: {{ .Values.mattermost.service }}
+      port: 8065
+      scheme: http
+  tls:
+    certResolver: {{ .Values.mattermost.certResolver }}
+{{- end }}

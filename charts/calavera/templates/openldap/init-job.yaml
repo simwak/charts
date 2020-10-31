@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-openldap-init
+spec:
+  template:
+    spec:
+      containers:
+      - name: openldap-init
+        image: emeraldsquad/ldapsearch
+        command: ["/bin/sh", "-c"]
+        args:
+          - while [ -n "$(ldapsearch -H ldap://$OPENLDAP_HOST -D "$OPENLDAP_ADMIN_USER" -w "$OPENLDAP_ADMIN_PASSWORD" -b "$OPENLDAP_USER" 2>&1 > /dev/null)" ]; do
+              echo "Waiting for OpenLdap $OPENLDAP_HOST ...";
+              sleep 5;
+            done;
+
+            ldapadd -H ldap://$OPENLDAP_HOST -D "$OPENLDAP_CONFIG_USER" -w "$OPENLDAP_CONFIG_PASSWORD" -f "/var/openldap/schema.ldif";
+            ldapadd -H ldap://$OPENLDAP_HOST -D "$OPENLDAP_ADMIN_USER" -w "$OPENLDAP_ADMIN_PASSWORD" -f "/var/openldap/default.ldif";
+        env:
+          - name: OPENLDAP_HOST
+            value: "{{ .Values.openldap.host }}"
+          - name: OPENLDAP_ADMIN_USER
+            value: "{{ .Values.openldap.adminUser }}"
+          - name: OPENLDAP_CONFIG_USER
+            value: "{{ .Values.openldap.configUser }}"
+          - name: OPENLDAP_ADMIN_PASSWORD
+            value: "{{ .Values.openldap.adminUserPassword }}"
+          - name: OPENLDAP_CONFIG_PASSWORD
+            value: "{{ .Values.openldap.configUserPassword }}"
+        volumeMounts:
+          - mountPath: /var/openldap
+            name: openldap
+      restartPolicy: Never
+      volumes:
+        - name: openldap
+          configMap:
+            name: {{ .Release.Name }}-openldap-init
+  backoffLimit: 4

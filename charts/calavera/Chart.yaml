@@ -1,0 +1,15 @@
+apiVersion: v2
+name: Calavera
+version: 0.1.0
+description: A fully featured web-based development environment
+type: application
+home: https://github.com/simwak/charts/tree/main/charts/calavera
+metadata:
+keywords:
+  - web-based
+  - development
+  - environment
+maintainers:
+  - name: Simon Wakenhut
+    email: simon@simonwakenhut.me
+    url: simonwakenhut.me
