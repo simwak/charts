@@ -1,9 +1,28 @@
 apiVersion: v1
 entries:
+  calavera:
+  - apiVersion: v2
+    created: "2020-10-31T14:43:49.7731309+01:00"
+    description: A fully featured web-based development environment
+    digest: f73ba9289c0301b672d8b73da57cf12fc65dfba49935de797d54abda9316d204
+    home: https://github.com/simwak/charts/tree/main/charts/calavera
+    keywords:
+    - web-based
+    - development
+    - environment
+    maintainers:
+    - email: simon@simonwakenhut.me
+      name: Simon Wakenhut
+      url: simonwakenhut.me
+    name: calavera
+    type: application
+    urls:
+    - https://github.com/simwak/charts/releases/download/calavera-0.1.0/calavera-0.1.0.tgz
+    version: 0.1.0
   gitea:
   - apiVersion: v2
     appVersion: 1.12.3
-    created: "2020-10-31T14:30:50.2067502+01:00"
+    created: "2020-10-31T14:43:50.0301697+01:00"
     dependencies:
     - condition: gitea.cache.enabled
       name: memcached
@@ -18,7 +37,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 8.6.4
     description: Gitea Helm chart for Kubernetes
-    digest: f784296fa26141cf8d6e40a4ec2dae2ea173c5242cecab937baa0d4b977ff506
+    digest: 0fe2ef902e20cd889811d3a12c8a8d993962f9a1bcbb53c47a2fe47ffafd0e41
     icon: https://docs.gitea.io/images/gitea.png
     keywords:
     - git
@@ -47,16 +66,16 @@ entries:
   openproject:
   - apiVersion: v2
     appVersion: 10.6.5
-    created: "2020-10-31T14:30:50.4190546+01:00"
+    created: "2020-10-31T14:43:50.2635809+01:00"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
       version: 9.1.1
     description: A Helm chart for OpenProject
-    digest: 76aff8e44181b5015db2315ffdec3742fa34ac0aea837192e130a08e7a182654
+    digest: 073132d730dd95e063a7973f909bde7f52d83621473aa013ced6e267a8b4dc10
     name: openproject
     type: application
     urls:
     - https://github.com/simwak/charts/releases/download/openproject-0.1.0/openproject-0.1.0.tgz
     version: 0.1.0
-generated: "2020-10-31T14:30:49.587719+01:00"
+generated: "2020-10-31T14:43:49.3568848+01:00"
