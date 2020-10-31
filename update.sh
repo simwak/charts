@@ -7,11 +7,12 @@ else
   exit 1
 fi
 
-rm -rf .cr-index
-rm -rf .cr-release-packages
+rm -rf .cr-index .cr-release-packages .cr-index-packages
 
 # Checkout to main
 git checkout main
+
+mkdir -p .cr-index .cr-release-packages .cr-index-packages
 
 for d in charts/* ; do
   version=$(helm show chart $d | grep -o -P '(?<=^version: ).*')
@@ -22,16 +23,21 @@ for d in charts/* ; do
   if ((res == 404)); then
     # Get dependencies and package it into .tgz
     helm package -u -d .cr-release-packages $d
+  else
+    helm package -u -d .cr-index-packages $d
   fi
 
   # Cleanup
   rm -rf $d/charts/*.tgz
 done
 
-mkdir -p .cr-index
+
 cp index.yaml .cr-index/index.yaml
 
 cr upload --owner simwak --git-repo charts --token $1
+
+cp .cr-index-packages/* .cr-release-packages
+
 cr index --owner simwak --git-repo charts --charts-repo https://github.com/simwak/charts --token $1
 
 git checkout chart-repository
@@ -39,6 +45,7 @@ git checkout chart-repository
 cp .cr-index/index.yaml index.yaml
 git add index.yaml
 
+git status
 read -p "Commit message: " msg
 
 git commit -m "$msg"
