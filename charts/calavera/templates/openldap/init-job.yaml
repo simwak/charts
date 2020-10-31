@@ -15,6 +15,8 @@ spec:
               sleep 5;
             done;
 
+            sleep 5;
+
             ldapadd -H ldap://$OPENLDAP_HOST -D "$OPENLDAP_CONFIG_USER" -w "$OPENLDAP_CONFIG_PASSWORD" -f "/var/openldap/schema.ldif";
             ldapadd -H ldap://$OPENLDAP_HOST -D "$OPENLDAP_ADMIN_USER" -w "$OPENLDAP_ADMIN_PASSWORD" -f "/var/openldap/default.ldif";
         env:

@@ -46,6 +46,13 @@ api:
     https: websecure
     http: web
   config:
+    enabled:
+      gitea: true
+      gitlab: true
+      openproject: true
+      jenkins: true
+      nexus: true
+      mattermost: true
     domains:
       base: example.com
       api: api.example.com
