@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ -n "$1" ]; then
+  echo "Token supplied"
+else
+  echo "Token not supplied. Exiting!"
+  exit 1
+fi
+
 # Checkout to main
 git checkout main
 
