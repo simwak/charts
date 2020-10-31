@@ -7,18 +7,29 @@ else
   exit 1
 fi
 
+rm -rf .cr-index
+rm -rf .cr-release-packages
+
 # Checkout to main
 git checkout main
 
 for d in charts/* ; do
-  # Get dependencies and package it into .tgz
-  helm package -u -d .cr-release-packages $d
-  
+  version=$(helm show chart $d | grep -o -P '(?<=^version: ).*')
+  name=$(helm show chart $d | grep -o -P '(?<=^name: ).*')
+  tag=$name-$version
+
+  res=$(curl -s -o /dev/null -w '%{http_code}\n' https://api.github.com/repos/simwak/charts/releases/tags/$tag)
+  if ((res == 404)); then
+    # Get dependencies and package it into .tgz
+    helm package -u -d .cr-release-packages $d
+  fi
+
   # Cleanup
   rm -rf $d/charts/*.tgz
 done
 
 mkdir -p .cr-index
+cp index.yaml .cr-index/index.yaml
 
 cr upload --owner simwak --git-repo charts --token $1
 cr index --owner simwak --git-repo charts --charts-repo https://github.com/simwak/charts --token $1
