@@ -2,9 +2,9 @@ apiVersion: v1
 entries:
   calavera:
   - apiVersion: v2
-    created: "2020-10-31T16:35:33.6884067+01:00"
+    created: "2020-10-31T16:51:35.6143958+01:00"
     description: A fully featured web-based development environment
-    digest: e69c50cdf6551497364b98c99b288dbe9d783f189371483c51587ae8d46acd05
+    digest: 5d47f8131e6b73275500e85ed39b92a0857cf3927ecef63d1a59cd41229cba54
     home: https://github.com/simwak/charts/tree/main/charts/calavera
     keywords:
     - web-based
@@ -19,4 +19,63 @@ entries:
     urls:
     - https://github.com/simwak/charts/releases/download/calavera-0.2.0/calavera-0.2.0.tgz
     version: 0.2.0
-generated: "2020-10-31T16:35:33.2751643+01:00"
+  gitea:
+  - apiVersion: v2
+    appVersion: 1.12.3
+    created: "2020-10-31T16:51:35.8326019+01:00"
+    dependencies:
+    - condition: gitea.cache.enabled
+      name: memcached
+      repository: https://charts.bitnami.com/bitnami
+      version: 4.2.20
+    - condition: gitea.database.builtIn.mysql.enabled
+      name: mysql
+      repository: https://charts.bitnami.com/bitnami
+      version: 6.14.8
+    - condition: gitea.database.builtIn.postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.6.4
+    description: Gitea Helm chart for Kubernetes
+    digest: 83ae1ad5fa60ed8f87906027a481eed44e37a860377961fc98c8387f72864a7b
+    icon: https://docs.gitea.io/images/gitea.png
+    keywords:
+    - git
+    - issue tracker
+    - code review
+    - wiki
+    - gitea
+    - gogs
+    maintainers:
+    - email: charlie@charliedrage.com
+      name: Charlie Drage
+    - email: maintainers@gitea.io
+      name: Gitea Authors
+    - email: konrad.lother@novum-rgi.de
+      name: Konrad Lother
+    - email: lucas.hahn@novum-rgi.de
+      name: Lucas Hahn
+    name: gitea
+    sources:
+    - https://github.com/go-gitea/gitea
+    - https://hub.docker.com/r/gitea/gitea/
+    type: application
+    urls:
+    - https://github.com/simwak/charts/releases/download/gitea-1.4.1/gitea-1.4.1.tgz
+    version: 1.4.1
+  openproject:
+  - apiVersion: v2
+    appVersion: 10.6.5
+    created: "2020-10-31T16:51:36.035481+01:00"
+    dependencies:
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 9.1.1
+    description: A Helm chart for OpenProject
+    digest: e0d0f79d4c7dc84df39aaeda3720397860b12b0eaabc86524b74468c3f39ce4d
+    name: openproject
+    type: application
+    urls:
+    - https://github.com/simwak/charts/releases/download/openproject-0.1.0/openproject-0.1.0.tgz
+    version: 0.1.0
+generated: "2020-10-31T16:51:35.1752347+01:00"
