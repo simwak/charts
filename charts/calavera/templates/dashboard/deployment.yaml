@@ -14,6 +14,15 @@ spec:
       labels:
         app: {{ .Release.Name }}-dashboard
     spec:
+      initContainers:
+        - name: wait-for-keycloak
+          image: byrnedo/alpine-curl
+          command: ["/bin/sh", "-c"]
+          args:
+            - until $(curl --output /dev/null --silent --head --insecure --fail https://{{ .Values.api.config.domains.keycloak }}/auth/); do
+                printf '.';
+                sleep 5;
+              done;
       containers:
         - name: calavera-dashboard
           image: "{{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}"
