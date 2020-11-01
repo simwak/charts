@@ -2,9 +2,9 @@ apiVersion: v1
 entries:
   calavera:
   - apiVersion: v2
-    created: "2020-10-31T16:51:35.6143958+01:00"
+    created: "2020-11-01T14:52:22.8411346+01:00"
     description: A fully featured web-based development environment
-    digest: 5d47f8131e6b73275500e85ed39b92a0857cf3927ecef63d1a59cd41229cba54
+    digest: 56dcd0b90edfa63c6ea204676e57d41281d8eb1c9a0a080db412e204903536cc
     home: https://github.com/simwak/charts/tree/main/charts/calavera
     keywords:
     - web-based
@@ -17,12 +17,12 @@ entries:
     name: calavera
     type: application
     urls:
-    - https://github.com/simwak/charts/releases/download/calavera-0.2.0/calavera-0.2.0.tgz
-    version: 0.2.0
+    - https://github.com/simwak/charts/releases/download/calavera-0.2.1/calavera-0.2.1.tgz
+    version: 0.2.1
   gitea:
   - apiVersion: v2
     appVersion: 1.12.3
-    created: "2020-10-31T16:51:35.8326019+01:00"
+    created: "2020-11-01T14:52:23.0736644+01:00"
     dependencies:
     - condition: gitea.cache.enabled
       name: memcached
@@ -37,7 +37,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 8.6.4
     description: Gitea Helm chart for Kubernetes
-    digest: 83ae1ad5fa60ed8f87906027a481eed44e37a860377961fc98c8387f72864a7b
+    digest: f895cb2bf534905d216d15549528b48563a5af3a2f5706e7f7493cac21648fbc
     icon: https://docs.gitea.io/images/gitea.png
     keywords:
     - git
@@ -66,16 +66,16 @@ entries:
   openproject:
   - apiVersion: v2
     appVersion: 10.6.5
-    created: "2020-10-31T16:51:36.035481+01:00"
+    created: "2020-11-01T14:52:23.3189684+01:00"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
       version: 9.1.1
     description: A Helm chart for OpenProject
-    digest: e0d0f79d4c7dc84df39aaeda3720397860b12b0eaabc86524b74468c3f39ce4d
+    digest: 536f93a9d2e03a86a52dcf639d23f33c36b14b8c3da7654e3242e99710875ebb
     name: openproject
     type: application
     urls:
     - https://github.com/simwak/charts/releases/download/openproject-0.1.0/openproject-0.1.0.tgz
     version: 0.1.0
-generated: "2020-10-31T16:51:35.1752347+01:00"
+generated: "2020-11-01T14:52:22.4317269+01:00"
